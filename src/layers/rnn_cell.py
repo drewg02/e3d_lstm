@@ -18,8 +18,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
-import tensorflow.contrib.layers as layers
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+import tensorflow.keras.layers as layers
 
 
 class EideticLSTMCell(object):
@@ -79,6 +80,9 @@ class EideticLSTMCell(object):
     self._output_size = tf.TensorShape(self._input_shape[:-1] +
                                        [self._output_channels])
 
+    self._gamma_init = tf.constant_initializer(self._norm_gain)
+    self._beta_init = tf.constant_initializer(self._norm_shift)
+
   @property
   def output_size(self):
     return self._output_size
@@ -88,14 +92,14 @@ class EideticLSTMCell(object):
     return self._state_size
 
   def _norm(self, inp, scope, dtype=tf.float32):
-    shape = inp.get_shape()[-1:]
-    gamma_init = tf.constant_initializer(self._norm_gain)
-    beta_init = tf.constant_initializer(self._norm_shift)
-    with tf.variable_scope(scope):
-      # Initialize beta and gamma for use by layer_norm.
-      tf.get_variable("gamma", shape=shape, initializer=gamma_init, dtype=dtype)
-      tf.get_variable("beta", shape=shape, initializer=beta_init, dtype=dtype)
-    normalized = layers.layer_norm(inp, reuse=True, scope=scope)
+    layer_norm = tf.keras.layers.LayerNormalization(
+      axis=-1,
+      gamma_initializer=self._gamma_init,
+      beta_initializer=self._beta_init
+    )
+
+    normalized = layer_norm(inp)
+
     return normalized
 
   def _attn(self, in_query, in_keys, in_values):

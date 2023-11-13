@@ -23,7 +23,7 @@ import datetime
 import os.path
 import cv2
 import numpy as np
-from skimage.measure import compare_ssim
+# from skimage.measure import compare_ssim
 from src.utils import preprocess
 
 

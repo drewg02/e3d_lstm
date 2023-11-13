@@ -23,50 +23,51 @@ from src.data_provider import datasets_factory
 from src.models.model_factory import Model
 import src.trainer as trainer
 from src.utils import preprocess
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 # -----------------------------------------------------------------------------
 FLAGS = tf.app.flags.FLAGS
 
-FLAGS.DEFINE_string('train_data_paths', '', 'train data paths.')
-FLAGS.DEFINE_string('valid_data_paths', '', 'validation data paths.')
-FLAGS.DEFINE_string('save_dir', '', 'dir to store trained net.')
-FLAGS.DEFINE_string('gen_frm_dir', '', 'dir to store result.')
+tf.app.flags.DEFINE_string('train_data_paths', '', 'train data paths.')
+tf.app.flags.DEFINE_string('valid_data_paths', '', 'validation data paths.')
+tf.app.flags.DEFINE_string('save_dir', '', 'dir to store trained net.')
+tf.app.flags.DEFINE_string('gen_frm_dir', '', 'dir to store result.')
 
-FLAGS.DEFINE_boolean('is_training', True, 'training or testing')
-FLAGS.DEFINE_string('dataset_name', 'mnist', 'The name of dataset.')
-FLAGS.DEFINE_integer('input_length', 10, 'input length.')
-FLAGS.DEFINE_integer('total_length', 20, 'total input and output length.')
-FLAGS.DEFINE_integer('img_width', 64, 'input image width.')
-FLAGS.DEFINE_integer('img_channel', 1, 'number of image channel.')
-FLAGS.DEFINE_integer('patch_size', 1, 'patch size on one dimension.')
-FLAGS.DEFINE_boolean('reverse_input', False,
+tf.app.flags.DEFINE_boolean('is_training', True, 'training or testing')
+tf.app.flags.DEFINE_string('dataset_name', 'mnist', 'The name of dataset.')
+tf.app.flags.DEFINE_integer('input_length', 10, 'input length.')
+tf.app.flags.DEFINE_integer('total_length', 20, 'total input and output length.')
+tf.app.flags.DEFINE_integer('img_width', 64, 'input image width.')
+tf.app.flags.DEFINE_integer('img_channel', 1, 'number of image channel.')
+tf.app.flags.DEFINE_integer('patch_size', 1, 'patch size on one dimension.')
+tf.app.flags.DEFINE_boolean('reverse_input', False,
                      'reverse the input/outputs during training.')
 
-FLAGS.DEFINE_string('model_name', 'e3d_lstm', 'The name of the architecture.')
-FLAGS.DEFINE_string('pretrained_model', '', '.ckpt file to initialize from.')
-FLAGS.DEFINE_string('num_hidden', '64,64,64,64',
+tf.app.flags.DEFINE_string('model_name', 'e3d_lstm', 'The name of the architecture.')
+tf.app.flags.DEFINE_string('pretrained_model', '', '.ckpt file to initialize from.')
+tf.app.flags.DEFINE_string('num_hidden', '64,64,64,64',
                     'COMMA separated number of units of e3d lstms.')
-FLAGS.DEFINE_integer('filter_size', 5, 'filter of a e3d lstm layer.')
-FLAGS.DEFINE_boolean('layer_norm', True, 'whether to apply tensor layer norm.')
+tf.app.flags.DEFINE_integer('filter_size', 5, 'filter of a e3d lstm layer.')
+tf.app.flags.DEFINE_boolean('layer_norm', True, 'whether to apply tensor layer norm.')
 
-FLAGS.DEFINE_boolean('scheduled_sampling', True, 'for scheduled sampling')
-FLAGS.DEFINE_integer('sampling_stop_iter', 50000, 'for scheduled sampling.')
-FLAGS.DEFINE_float('sampling_start_value', 1.0, 'for scheduled sampling.')
-FLAGS.DEFINE_float('sampling_changing_rate', 0.00002, 'for scheduled sampling.')
+tf.app.flags.DEFINE_boolean('scheduled_sampling', True, 'for scheduled sampling')
+tf.app.flags.DEFINE_integer('sampling_stop_iter', 50000, 'for scheduled sampling.')
+tf.app.flags.DEFINE_float('sampling_start_value', 1.0, 'for scheduled sampling.')
+tf.app.flags.DEFINE_float('sampling_changing_rate', 0.00002, 'for scheduled sampling.')
 
-FLAGS.DEFINE_float('lr', 0.001, 'learning rate.')
-FLAGS.DEFINE_integer('batch_size', 8, 'batch size for training.')
-FLAGS.DEFINE_integer('max_iterations', 80000, 'max num of steps.')
-FLAGS.DEFINE_integer('display_interval', 1,
+tf.app.flags.DEFINE_float('lr', 0.001, 'learning rate.')
+tf.app.flags.DEFINE_integer('batch_size', 8, 'batch size for training.')
+tf.app.flags.DEFINE_integer('max_iterations', 80000, 'max num of steps.')
+tf.app.flags.DEFINE_integer('display_interval', 1,
                      'number of iters showing training loss.')
-FLAGS.DEFINE_integer('test_interval', 1000, 'number of iters for test.')
-FLAGS.DEFINE_integer('snapshot_interval', 1000,
+tf.app.flags.DEFINE_integer('test_interval', 1000, 'number of iters for test.')
+tf.app.flags.DEFINE_integer('snapshot_interval', 1000,
                      'number of iters saving models.')
-FLAGS.DEFINE_integer('num_save_samples', 10, 'number of sequences to be saved.')
-FLAGS.DEFINE_integer('n_gpu', 1,
+tf.app.flags.DEFINE_integer('num_save_samples', 10, 'number of sequences to be saved.')
+tf.app.flags.DEFINE_integer('n_gpu', 1,
                      'how many GPUs to distribute the training across.')
-FLAGS.DEFINE_boolean('allow_gpu_growth', True, 'allow gpu growth')
+tf.app.flags.DEFINE_boolean('allow_gpu_growth', True, 'allow gpu growth')
 
 
 def main(_):

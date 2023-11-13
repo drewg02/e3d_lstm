@@ -20,7 +20,8 @@ from __future__ import print_function
 
 import os
 from src.models import eidetic_3d_lstm_net
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 
 def adam_updates(params, cost_or_grads, lr=0.001, mom1=0.9, mom2=0.999):
